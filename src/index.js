@@ -1,17 +1,32 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React from "react"
+import ReactDOM from "react-dom"
+import "./index.css"
+import App from "./App"
+import axios from "axios"
+// Find all widget divs
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+// Setup Axios once here
+axios.defaults.headers = { Accept: "application/json" }
+const axiosInstance = axios.create({
+  // baseURL: process.env.REACT_APP_BASE_URL,
+  baseURL: " https://swapi.dev/api/",
+})
+export default axiosInstance
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+console.log("axios", axios)
+
+setTimeout(() => {
+  let widgetDiv = document.querySelectorAll(".daoalert-widget")
+  console.log("widgetDiv", widgetDiv)
+  console.log("React", React)
+
+  // Inject our React App into each class
+  widgetDiv.forEach((div) => {
+    ReactDOM.render(
+      <React.StrictMode>
+        <App symbol={div.dataset.symbol} />
+      </React.StrictMode>,
+      div
+    )
+  })
+}, 5000)
