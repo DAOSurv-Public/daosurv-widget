@@ -191,7 +191,7 @@ const SurveyFooterWrapper = styled.div`
 `;
 
 const Survey = (props) => {
-  const { name, image, proposalId, proposalLink } = props;
+  const { name, image, description, proposalId, proposalLink } = props;
   const [confirmState, setConfirmState] = useState(false);
   const handleVote = (vote) => {
     setConfirmState(true);
@@ -228,11 +228,11 @@ const Survey = (props) => {
             </div>
           </CardContentWrapper>
           <DescriptionWrapper>
-            <p> How would you vote?</p>
+            <p>{description}</p>
           </DescriptionWrapper>
           <hr />
           <CardContentWrapper>
-            <p>How would you vote? </p>
+            <p>How would you vote?</p>
             <a href={proposalLink} target="_blank" rel="noreferrer">
               <Button>
                 Go to proposal{" "}
@@ -357,18 +357,20 @@ const Widget = (props) => {
   const { daoId } = props;
   const [isAlertContent, setIsAlertContent] = useState(true);
   const [transactions, setTransactions] = useState();
+  const [proposals, setProposals] = useState();
   useEffect(() => {
     fetchData();
   }, [daoId]);
 
   const fetchData = async () => {
     if (daoId) {
-      console.log("fetch data of: ", daoId);
       const res = await axiosInstance.get(
-        `https://api.daosurv.xyz/widget/alerts/${daoId}`
+        `https://api.daosurv.xyz/widget/data/${daoId}`
       );
-      console.log("response", res);
-      setTransactions(res.data.list);
+
+      setTransactions(res.data.alert);
+
+      setProposals(res.data.db_proposals);
     }
   };
 
@@ -465,16 +467,18 @@ const Widget = (props) => {
             </>
           ) : (
             <>
-              {surveyData.map((surveyItem, index) => {
-                return (
-                  <Survey
-                    name={assets[daoId].name}
-                    proposalId={surveyItem.proposalId}
-                    proposalLink={surveyItem.proposalLink}
-                    image={assets[daoId].image}
-                  />
-                );
-              })}
+              {proposals &&
+                Object.values(proposals).map((surveyItem, index) => {
+                  return (
+                    <Survey
+                      name={assets[daoId].name}
+                      proposalId={surveyItem.proposalId ?? ""}
+                      description={surveyItem.description ?? ""}
+                      proposalLink={surveyItem.proposalLink ?? ""}
+                      image={assets[daoId].image}
+                    />
+                  );
+                })}
             </>
           )}
         </CardListWrapper>
