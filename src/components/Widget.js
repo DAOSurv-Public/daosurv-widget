@@ -1,33 +1,28 @@
 import axiosInstance from "../index";
 import styled from "styled-components";
 import { useEffect, useState } from "react";
-import { IconBox } from "./IconBox";
-import { Button, YesButton, NoButton, AbsentButton } from "./Button";
-import { Item } from "./Item";
+import {
+  Button,
+  YesButton,
+  NoButton,
+  AbsentButton,
+  EtherscanButton,
+} from "./Button";
 import { Avatar } from "./Avatar";
 import Drawer from "./Drawer";
-const Card = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  padding: 24px;
-  background: #fff;
-  border-radius: 24px;
-`;
-
-const AvatarCard = styled.div`
-  aspect-ratio: 1;
-`;
+import BigNumber from "bignumber.js";
+import { maskWallet } from "../utils/maskAddress";
+import assets from "../assets/assets.json";
 
 const WidgetButton = styled.button`
-  position: absolute;
+  position: fixed;
   background: #ffffff;
   transform: rotate(-90deg);
   top: 40%;
   border-top-left-radius: 10px 10px;
   border-top-right-radius: 10px 10px;
   border: none;
-  right: 0%;
+  right: 0;
   margin-right: -40px;
 `;
 
@@ -68,21 +63,14 @@ const CardContentWrapper = styled.div`
 const TransactionFooterWrapper = styled.div`
   display: flex;
   justify-content: space-between;
+  align-items: center;
 `;
-
-const EtherscanButton = () => {
-  return (
-    <Button>
-      <img src="/images/etherscan-logo.svg" alt="etherscan" />
-    </Button>
-  );
-};
 
 const StyledToggleContentButton = styled(Button)`
   /* background: #ffffff; */
   background: ${(props) => (props.selected ? "white" : "transparent")};
   border-radius: 40px;
-  color: ${(props) => (props.selected ? "black" : "white")};
+  color: ${(props) => (props.selected ? "#0028FF" : "white")};
   height: 48px;
   width: 90px;
   font-size: 16px;
@@ -160,9 +148,9 @@ const Transaction = (props) => {
       <TransactionFooterWrapper>
         <TransactionPathText>
           from&nbsp;
-          <span style={{ color: "#3F5DFF" }}>{from.slic(0, 4)}..&nbsp;</span>
+          <span style={{ color: "#3F5DFF" }}>{maskWallet(from)}&nbsp;</span>
           to&nbsp;
-          <span style={{ color: "#3F5DFF" }}>{to.silce(0, 4)}..</span>
+          <span style={{ color: "#3F5DFF" }}>{maskWallet(to)}</span>
         </TransactionPathText>
         <a href={etherscanLink} target="_blank" rel="noreferrer">
           <EtherscanButton>Etherscan</EtherscanButton>
@@ -171,6 +159,12 @@ const Transaction = (props) => {
     </CardItem>
   );
 };
+
+const DescriptionWrapper = styled.div`
+  background: #f5f5f5;
+  border-radius: 16px;
+  padding: 16px;
+`;
 
 const SurveyFooterWrapper = styled.div`
   display: flex;
@@ -197,6 +191,10 @@ const Survey = (props) => {
           </p>
         </div>
       </CardContentWrapper>
+      <DescriptionWrapper>
+        <p> How would you vote?</p>
+      </DescriptionWrapper>
+      <hr />
       <CardContentWrapper>
         <p>How would you vote? </p>
         <a href={proposalLink} target="_blank" rel="noreferrer">
@@ -248,52 +246,59 @@ const surveyData = [
   },
 ];
 
-const transactions = [
-  {
-    name: "DuDaoo",
-    image: "",
-    to: "0xaddadwwa",
-    from: "0xaddadwwa",
-    etherscanLink: "",
-    isSent: true,
-    valueUSD: 10000,
-    value: 0.01,
-    symbol: "ETH",
-  },
-  {
-    name: "DuDaoo",
-    image: "",
-    to: "0xaddadwwa",
-    from: "0xaddadwwa",
-    etherscanLink: "",
-    isSent: true,
-    valueUSD: 10000,
-    value: 0.01,
-    symbol: "ETH",
-  },
-  {
-    name: "DuDaoo",
-    image: "",
-    to: "0xaddadwwa",
-    from: "0xaddadwwa",
-    etherscanLink: "",
-    isSent: true,
-    valueUSD: 10000,
-    value: 0.01,
-    symbol: "ETH",
-  },
-];
+// const transactions = [
+//   {
+//     name: "DuDaoo",
+//     image: "",
+//     to: "0xaddadwwa",
+//     from: "0xaddadwwa",
+//     etherscanLink: "",
+//     isSent: true,
+//     valueUSD: 10000,
+//     value: 0.01,
+//     symbol: "ETH",
+//   },
+//   {
+//     name: "DuDaoo",
+//     image: "",
+//     to: "0xaddadwwa",
+//     from: "0xaddadwwa",
+//     etherscanLink: "",
+//     isSent: true,
+//     valueUSD: 10000,
+//     value: 0.01,
+//     symbol: "ETH",
+//   },
+//   {
+//     name: "DuDaoo",
+//     image: "",
+//     to: "0xaddadwwa",
+//     from: "0xaddadwwa",
+//     etherscanLink: "",
+//     isSent: true,
+//     valueUSD: 10000,
+//     value: 0.01,
+//     symbol: "ETH",
+//   },
+// ];
 
 const Widget = (props) => {
-  const [name, setName] = useState();
+  const { daoId } = props;
   const [isAlertContent, setIsAlertContent] = useState(true);
+  const [transactions, setTransactions] = useState();
   useEffect(() => {
-    test();
-  }, []);
+    fetchData();
+  }, [daoId]);
 
-  const test = async () => {
-    const res = await axiosInstance.get("people/1/");
-    setName(res.data.name);
+  const fetchData = async () => {
+    if (daoId) {
+      console.log("fetch data of: ", daoId);
+      const res = await axiosInstance.get(
+        `https://api.daosurv.xyz/widget/alerts/${daoId}`
+      );
+      console.log("response", res);
+      setTransactions(res.data.list);
+    }
   };
 
   const [isOpen, setIsOpen] = useState(false);
@@ -364,21 +369,22 @@ const Widget = (props) => {
         <CardListWrapper>
           {isAlertContent ? (
             <>
-              {transactions.map((transaction, index) => {
-                return (
-                  <Transaction
-                    name={transaction.name}
-                    image={transaction.image}
-                    to={transaction.to}
-                    from={transaction.from}
-                    etherscanLink={transaction.etherscanLink}
-                    isSent={transaction.isSent}
-                    valueUSD={transaction.valueUSD}
-                    value={transaction.value}
-                    symbol={transaction.symbol}
-                  />
-                );
-              })}
+              {transactions &&
+                transactions.map((transaction, index) => {
+                  return (
+                    <Transaction
+                      name={assets[daoId].name}
+                      image={assets[daoId].image}
+                      to={transaction.to}
+                      from={transaction.from}
+                      etherscanLink={`https://etherscan.io/tx/${transaction.etherscanLink}`}
+                      isSent={transaction.isSent}
+                      valueUSD={new BigNumber(transaction.valueUSD).toFixed(2)}
+                      value={new BigNumber(transaction.value).toFixed(2)}
+                      symbol={transaction.symbol}
+                    />
+                  );
+                })}
             </>
           ) : (
             <>

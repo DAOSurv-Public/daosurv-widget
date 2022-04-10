@@ -1,0 +1,10 @@
+{
+  "nounsdao": {
+    "name": "Nouns dao",
+    "image": "https://deepdao-uploads.s3.us-east-2.amazonaws.com/assets/snapshots/spaces/nouns.eth.png"
+  },
+  "aave": {
+    "name": "AAVE",
+    "image": "https://deepdao-uploads.s3.us-east-2.amazonaws.com/assets/dao/logo/aave.png"
+  }
+}

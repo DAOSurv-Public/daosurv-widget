@@ -21,6 +21,26 @@ const StyledButton = styled.button`
   width: 106px;
 `;
 
+export const PrimaryButton = styled.button`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 8px;
+  background: #0028ff;
+  border-radius: 16px;
+  height: 32px;
+  width: 106px;
+`;
+
+export const EtherscanButton = () => {
+  return (
+    <Button>
+      <img src="/images/etherscan-logo.svg" alt="etherscan" />
+    </Button>
+  );
+};
+
 export const YesButton = (props) => {
   const { onClick } = props;
 
