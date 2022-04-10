@@ -367,9 +367,7 @@ const Widget = (props) => {
       const res = await axiosInstance.get(
         `https://api.daosurv.xyz/widget/data/${daoId}`
       );
-
-      setTransactions(res.data.alert);
-
+      setTransactions(res.data.alerts.list);
       setProposals(res.data.db_proposals);
     }
   };
