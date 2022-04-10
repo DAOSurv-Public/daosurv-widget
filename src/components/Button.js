@@ -13,6 +13,7 @@ export const Button = styled.button`
   align-items: center;
 `;
 const StyledButton = styled.button`
+  cursor: pointer;
   color: ${(props) => (props.color ? props.color : "white")};
   background: ${(props) => (props.background ? props.background : "black")};
   border-radius: 16px;
@@ -28,9 +29,25 @@ export const PrimaryButton = styled.button`
   align-items: center;
   padding: 8px;
   background: #0028ff;
+  border: none;
+  color: white;
   border-radius: 16px;
   height: 32px;
-  width: 106px;
+  width: 50%;
+`;
+
+export const OutlinePrimaryButton = styled.button`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 8px;
+  color: #0028ff;
+  border: 1px solid #0028ff;
+  box-sizing: border-box;
+  border-radius: 16px;
+  height: 32px;
+  width: 50%;
 `;
 
 export const EtherscanButton = () => {

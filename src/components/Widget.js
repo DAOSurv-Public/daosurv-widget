@@ -7,6 +7,8 @@ import {
   NoButton,
   AbsentButton,
   EtherscanButton,
+  PrimaryButton,
+  OutlinePrimaryButton,
 } from "./Button";
 import { Avatar } from "./Avatar";
 import Drawer from "./Drawer";
@@ -130,16 +132,31 @@ const Transaction = (props) => {
   return (
     <CardItem>
       <CardContentWrapper>
-        <div>
-          <Avatar src={image} /> {name}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
+          <Avatar src={image} />
+          <p
+            style={{
+              marginLeft: "8px",
+              fontSize: "16px",
+              fontWeight: 700,
+            }}
+          >
+            {name}
+          </p>
         </div>
 
         <div>
           <p>
-            {isSent ? "sent" : "receive"} {valueUSD} USD
+            {isSent ? "sent" : "receive"}{" "}
+            <span style={{ fontWeight: 700 }}>{valueUSD}</span> USD
           </p>
           <p>
-            <span>{value}&nbsp;</span>
+            <span style={{ fontWeight: 700 }}>{value}&nbsp;</span>
             {symbol}
           </p>
         </div>
@@ -168,59 +185,109 @@ const DescriptionWrapper = styled.div`
 
 const SurveyFooterWrapper = styled.div`
   display: flex;
+  gap: 10px 10px;
   justify-content: space-between;
   background: "#F5F5F5";
 `;
 
 const Survey = (props) => {
   const { name, image, proposalId, proposalLink } = props;
-
-  const handleVote = (vote) => {};
+  const [confirmState, setConfirmState] = useState(false);
+  const handleVote = (vote) => {
+    setConfirmState(true);
+  };
 
   return (
     <CardItem>
-      <CardContentWrapper>
-        <div>
-          <Avatar src={image} /> {name}
-        </div>
+      {!confirmState ? (
+        <>
+          <CardContentWrapper>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              <Avatar src={image} />
+              <p
+                style={{
+                  marginLeft: "8px",
+                  fontSize: "16px",
+                  fontWeight: 700,
+                }}
+              >
+                {name}
+              </p>
+            </div>
 
-        <div>
-          <p>New Proposal</p>
-          <p>
-            ID&nbsp;<span style={{ fontWeight: 700 }}>{proposalId}</span>
-          </p>
-        </div>
-      </CardContentWrapper>
-      <DescriptionWrapper>
-        <p> How would you vote?</p>
-      </DescriptionWrapper>
-      <hr />
-      <CardContentWrapper>
-        <p>How would you vote? </p>
-        <a href={proposalLink} target="_blank" rel="noreferrer">
-          <Button>
-            Go to proposal{" "}
-            <img src="/images/arrow-up.svg" alt="go-to-proposal" />
-          </Button>
-        </a>
-      </CardContentWrapper>
-      <SurveyFooterWrapper>
-        <YesButton
-          onClick={() => {
-            handleVote("yes");
-          }}
-        />
-        <NoButton
-          onClick={() => {
-            handleVote("no");
-          }}
-        />
-        <AbsentButton
-          onClick={() => {
-            handleVote("absent");
-          }}
-        />
-      </SurveyFooterWrapper>
+            <div>
+              <p>New Proposal</p>
+              <p>
+                ID&nbsp;<span style={{ fontWeight: 700 }}>{proposalId}</span>
+              </p>
+            </div>
+          </CardContentWrapper>
+          <DescriptionWrapper>
+            <p> How would you vote?</p>
+          </DescriptionWrapper>
+          <hr />
+          <CardContentWrapper>
+            <p>How would you vote? </p>
+            <a href={proposalLink} target="_blank" rel="noreferrer">
+              <Button>
+                Go to proposal{" "}
+                <img src="/images/arrow-up.svg" alt="go-to-proposal" />
+              </Button>
+            </a>
+          </CardContentWrapper>
+          <SurveyFooterWrapper>
+            <YesButton
+              onClick={() => {
+                handleVote("yes");
+              }}
+            />
+            <NoButton
+              onClick={() => {
+                handleVote("no");
+              }}
+            />
+            <AbsentButton
+              onClick={() => {
+                handleVote("absent");
+              }}
+            />
+          </SurveyFooterWrapper>
+        </>
+      ) : (
+        <>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
+            <img src="/images/info.svg" alt="info" />
+            <p>Confirm your vote</p>
+          </div>
+          <SurveyFooterWrapper>
+            <PrimaryButton
+              onClick={() => {
+                setConfirmState(false);
+              }}
+            >
+              Confirm
+            </PrimaryButton>
+            <OutlinePrimaryButton
+              onClick={() => {
+                setConfirmState(false);
+              }}
+            >
+              Cancel
+            </OutlinePrimaryButton>
+          </SurveyFooterWrapper>
+        </>
+      )}
     </CardItem>
   );
 };
@@ -391,10 +458,10 @@ const Widget = (props) => {
               {surveyData.map((surveyItem, index) => {
                 return (
                   <Survey
-                    name={surveyItem.name}
+                    name={assets[daoId].name}
                     proposalId={surveyItem.proposalId}
                     proposalLink={surveyItem.proposalLink}
-                    image={surveyItem.image}
+                    image={assets[daoId].image}
                   />
                 );
               })}
