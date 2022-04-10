@@ -52,7 +52,7 @@ const DrawerOverlay = styled.div`
   right: 0px;
   bottom: 0px;
   left: 0px;
-  z-index: 8;
+  z-index: 8008;
   display: ${(props) => (props.open ? null : "none")};
 `;
 
@@ -61,7 +61,7 @@ const DrawerContent = styled.div`
   box-sizing: border-box;
   position: fixed;
   ${(props) => placements[props.position]}
-  z-index: 16;
+  z-index: 9000;
   width: ${(props) =>
     props.position !== "top" && props.position !== "bottom" && props.size
       ? props.size

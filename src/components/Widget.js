@@ -236,7 +236,11 @@ const Survey = (props) => {
             <a href={proposalLink} target="_blank" rel="noreferrer">
               <Button>
                 Go to proposal{" "}
-                <img src="/images/arrow-up.svg" alt="go-to-proposal" />
+                <img
+                  src="https://www.daosurv.xyz/static/images/arrow-up-right.svg"
+                  width="24px"
+                  alt="go-to-proposal"
+                />
               </Button>
             </a>
           </CardContentWrapper>
@@ -371,13 +375,7 @@ const Widget = (props) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div
-      style={{
-        minWidth: "100vh",
-        minHeight: "100vh",
-        backgroundColor: "red",
-      }}
-    >
+    <div>
       <WidgetButton
         onClick={() => {
           setIsOpen(true);
@@ -387,11 +385,12 @@ const Widget = (props) => {
         }}
       >
         <img
-          src="/logo.svg"
+          src="https://www.daosurv.xyz/static/images/logo.svg"
           width="100px"
           styled={{ margin: 0, padding: 0 }}
           alt="logo"
         />
+
         <BlueLine />
       </WidgetButton>
 
@@ -411,10 +410,21 @@ const Widget = (props) => {
           }}
         >
           <img
-            src="/logo.svg"
+            src="https://www.daosurv.xyz/static/images/logo.svg"
             width="100px"
             styled={{ margin: 0, padding: 0 }}
             alt="logo"
+          />
+          <img
+            style={{
+              cursor: "pointer",
+            }}
+            onClick={() => {
+              setIsOpen(false);
+            }}
+            src="https://www.daosurv.xyz/static/images/arrow-right.svg"
+            width="24px"
+            alt="close"
           />
         </FlexBox>
         <FlexBox

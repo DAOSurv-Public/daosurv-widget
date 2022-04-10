@@ -53,7 +53,10 @@ export const OutlinePrimaryButton = styled.button`
 export const EtherscanButton = () => {
   return (
     <Button>
-      <img src="/images/etherscan-logo.svg" alt="etherscan" />
+      <img
+        src="https://www.daosurv.xyz/static/images/etherscan.svg"
+        alt="etherscan"
+      />
     </Button>
   );
 };
