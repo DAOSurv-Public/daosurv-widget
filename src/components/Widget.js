@@ -271,7 +271,10 @@ const Survey = (props) => {
               alignItems: "center",
             }}
           >
-            <img src="/images/info.svg" alt="info" />
+            <img
+              src="https://www.daosurv.xyz/static/images/info.svg"
+              alt="info"
+            />
             <p>Confirm your vote</p>
           </div>
           <SurveyFooterWrapper>
