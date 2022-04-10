@@ -88,7 +88,9 @@ const StyledToggleContentButton = styled(Button)`
   font-size: 16px;
 `;
 
-const ToggleButton = () => {
+const ToggleButton = (props) => {
+  const { selected, handleOnclick } = props;
+
   return (
     <FlexBox
       style={{
@@ -98,9 +100,14 @@ const ToggleButton = () => {
         justifyContent: "space-between",
         border: "2px solid white",
       }}
+      onClick={handleOnclick}
     >
-      <StyledToggleContentButton selected>Alert</StyledToggleContentButton>
-      <StyledToggleContentButton>Survey</StyledToggleContentButton>
+      <StyledToggleContentButton selected={selected}>
+        Alert
+      </StyledToggleContentButton>
+      <StyledToggleContentButton selected={!selected}>
+        Survey
+      </StyledToggleContentButton>
     </FlexBox>
   );
 };
@@ -119,18 +126,33 @@ const CardListWrapper = styled.div`
   background: #f5f5f5;
 `;
 
-const Transaction = () => {
+const Transaction = (props) => {
+  const {
+    name,
+    image,
+    to,
+    from,
+    etherscanLink,
+    isSent,
+    valueUSD,
+    value,
+    symbol,
+  } = props;
+
   return (
     <CardItem>
       <CardContentWrapper>
         <div>
-          <Avatar src="" /> Duu Dao
+          <Avatar src={image} /> {name}
         </div>
 
         <div>
-          <p>sent 112.453 USD</p>
           <p>
-            <span>0.012 </span>ETH{" "}
+            {isSent ? "sent" : "receive"} {valueUSD} USD
+          </p>
+          <p>
+            <span>{value}&nbsp;</span>
+            {symbol}
           </p>
         </div>
       </CardContentWrapper>
@@ -138,12 +160,13 @@ const Transaction = () => {
       <TransactionFooterWrapper>
         <TransactionPathText>
           from&nbsp;
-          <span style={{ color: "#3F5DFF" }}>0xc05..&nbsp;</span>
+          <span style={{ color: "#3F5DFF" }}>{from.slic(0, 4)}..&nbsp;</span>
           to&nbsp;
-          <span style={{ color: "#3F5DFF" }}>0xc05..</span>
+          <span style={{ color: "#3F5DFF" }}>{to.silce(0, 4)}..</span>
         </TransactionPathText>
-
-        <EtherscanButton>Etherscan</EtherscanButton>
+        <a href={etherscanLink} target="_blank" rel="noreferrer">
+          <EtherscanButton>Etherscan</EtherscanButton>
+        </a>
       </TransactionFooterWrapper>
     </CardItem>
   );
@@ -155,38 +178,115 @@ const SurveyFooterWrapper = styled.div`
   background: "#F5F5F5";
 `;
 
-const Survey = () => {
+const Survey = (props) => {
+  const { name, image, proposalId, proposalLink } = props;
+
+  const handleVote = (vote) => {};
+
   return (
     <CardItem>
       <CardContentWrapper>
         <div>
-          <Avatar src="" /> Duu Dao
+          <Avatar src={image} /> {name}
         </div>
 
         <div>
           <p>New Proposal</p>
           <p>
-            ID&nbsp;<span style={{ fontWeight: 700 }}>2340</span>
+            ID&nbsp;<span style={{ fontWeight: 700 }}>{proposalId}</span>
           </p>
         </div>
       </CardContentWrapper>
       <CardContentWrapper>
         <p>How would you vote? </p>
-        <Button>
-          Go to proposal <img src="/images/arrow-up.svg" />
-        </Button>
+        <a href={proposalLink} target="_blank" rel="noreferrer">
+          <Button>
+            Go to proposal{" "}
+            <img src="/images/arrow-up.svg" alt="go-to-proposal" />
+          </Button>
+        </a>
       </CardContentWrapper>
       <SurveyFooterWrapper>
-        <YesButton />
-        <NoButton />
-        <AbsentButton />
+        <YesButton
+          onClick={() => {
+            handleVote("yes");
+          }}
+        />
+        <NoButton
+          onClick={() => {
+            handleVote("no");
+          }}
+        />
+        <AbsentButton
+          onClick={() => {
+            handleVote("absent");
+          }}
+        />
       </SurveyFooterWrapper>
     </CardItem>
   );
 };
 
+const surveyData = [
+  {
+    name: "Do Dao",
+    proposalId: "1234",
+    proposalLink: "google.com",
+    image: "",
+  },
+  {
+    name: "Do Dao",
+    proposalId: "1234",
+    proposalLink: "google.com",
+    image: "",
+  },
+  {
+    name: "Do Dao",
+    proposalId: "1234",
+    proposalLink: "google.com",
+    image: "",
+  },
+];
+
+const transactions = [
+  {
+    name: "DuDaoo",
+    image: "",
+    to: "0xaddadwwa",
+    from: "0xaddadwwa",
+    etherscanLink: "",
+    isSent: true,
+    valueUSD: 10000,
+    value: 0.01,
+    symbol: "ETH",
+  },
+  {
+    name: "DuDaoo",
+    image: "",
+    to: "0xaddadwwa",
+    from: "0xaddadwwa",
+    etherscanLink: "",
+    isSent: true,
+    valueUSD: 10000,
+    value: 0.01,
+    symbol: "ETH",
+  },
+  {
+    name: "DuDaoo",
+    image: "",
+    to: "0xaddadwwa",
+    from: "0xaddadwwa",
+    etherscanLink: "",
+    isSent: true,
+    valueUSD: 10000,
+    value: 0.01,
+    symbol: "ETH",
+  },
+];
+
 const Widget = (props) => {
   const [name, setName] = useState();
+  const [isAlertContent, setIsAlertContent] = useState(true);
   useEffect(() => {
     test();
   }, []);
@@ -235,6 +335,7 @@ const Widget = (props) => {
         <FlexBox
           style={{
             justifyContent: "space-between",
+            padding: "32px",
           }}
         >
           <img
@@ -247,29 +348,52 @@ const Widget = (props) => {
         <FlexBox
           style={{
             backgroundColor: "#0028FF",
+            padding: "8px 32px",
             height: "64px",
             justifyContent: "space-between",
           }}
         >
           <MenuTitle>Feed</MenuTitle>
-          <ToggleButton />
+          <ToggleButton
+            selected={isAlertContent}
+            handleOnclick={() => {
+              setIsAlertContent(!isAlertContent);
+            }}
+          />
         </FlexBox>
         <CardListWrapper>
-          {/* <>
-            <Transaction />
-
-            <Transaction />
-            <Transaction />
-            <Transaction />
-          </> */}
-
-          <>
-            <Survey />
-
-            <Survey />
-            <Survey />
-            <Survey />
-          </>
+          {isAlertContent ? (
+            <>
+              {transactions.map((transaction, index) => {
+                return (
+                  <Transaction
+                    name={transaction.name}
+                    image={transaction.image}
+                    to={transaction.to}
+                    from={transaction.from}
+                    etherscanLink={transaction.etherscanLink}
+                    isSent={transaction.isSent}
+                    valueUSD={transaction.valueUSD}
+                    value={transaction.value}
+                    symbol={transaction.symbol}
+                  />
+                );
+              })}
+            </>
+          ) : (
+            <>
+              {surveyData.map((surveyItem, index) => {
+                return (
+                  <Survey
+                    name={surveyItem.name}
+                    proposalId={surveyItem.proposalId}
+                    proposalLink={surveyItem.proposalLink}
+                    image={surveyItem.image}
+                  />
+                );
+              })}
+            </>
+          )}
         </CardListWrapper>
       </Drawer>
     </div>
